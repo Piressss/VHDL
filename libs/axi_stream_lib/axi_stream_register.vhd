@@ -4,10 +4,14 @@
 -- @Lib   : AXI_STREAM LIB
 -- @Code  : AXI_STREAM_REGISTER
 ---------------------------------------------------------------------
+library ieee;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+---------------------------------------------------------------------
 entity axi_stream_register is
     generic(
         tdata_size_g        : integer := 1;
-        tuser_size_g        : integer := 1;
+        tuser_size_g        : integer := 1
     );
     port(
         clk_i               : in  std_logic;
@@ -46,13 +50,13 @@ begin
             if rst_i = '1' then
                 tvalid_s <= '0';
                 tlast_s  <= '0';
-                tdata_s  <= '0';
-                tuser_s  <= '0';
+                tdata_s  <= (others => '0');
+                tuser_s  <= (others => '0');
             elsif tready_s = '1' then
                 tvalid_s <= s_axis_tvalid_i;
                 tlast_s  <= s_axis_tlast_i;
                 tdata_s  <= s_axis_tdata_i;
-                tuser_s  <= s_axis_tuseri;
+                tuser_s  <= s_axis_tuser_i;
             end if;
         end if;
     end process;
