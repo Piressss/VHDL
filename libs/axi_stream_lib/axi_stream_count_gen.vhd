@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------
 -- @Author: Felipe Pires
 -- @Date  : 27/12/2018
--- @Lib   : AXI_STREAM LIB
--- @Code  : AXI_STREAM_COUNT_GEN
+-- @Lib   : AXIS LIB
+-- @Code  : AXIS_COUNT_GEN
 ---------------------------------------------------------------------
 library ieee;
 use IEEE.std_logic_1164.all;

@@ -1,8 +1,8 @@
 ---------------------------------------------------------------------
 -- @Author: Felipe Pires
 -- @Date  : 27/12/2018
--- @Lib   : AXI_STREAM LIB
--- @Code  : AXI_STREAM_REGISTER
+-- @Lib   : AXIS LIB
+-- @Code  : AXIS_REGISTER
 ---------------------------------------------------------------------
 library ieee;
 use IEEE.std_logic_1164.all;
@@ -65,6 +65,8 @@ begin
     -- Ctrl the TREADY based on the Master Port 
     -----------------------------------------------------------------
     tready_s <= '0' when tvalid_s = '1' and m_axis_tready_i = '0' else '1';
+
+    s_axis_tready_o <= tready_s;
     
     -----------------------------------------------------------------
     -- Connect all register signals to the Master Port 
