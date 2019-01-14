@@ -11,7 +11,10 @@ use IEEE.numeric_std.all;
 library axis_lib;
 --
 library vunit_lib;
+use vunit_lib.axi_stream_pkg.all;
 context vunit_lib.vunit_context;
+context vunit_lib.com_context;
+context vunit_lib.data_types_context;
 ---------------------------------------------------------------------
 entity axi_stream_count_gen_tb is
     generic(
@@ -22,10 +25,15 @@ end axi_stream_count_gen_tb;
 
 architecture tb of axi_stream_count_gen_tb is
 
+    constant logger                 : logger_t := get_logger("protocol_checker");
+    constant protocol_checker       : axi_stream_protocol_checker_t := new_axi_stream_protocol_checker(data_length => counter_bits_g, logger => logger, actor =>
+                                      new_actor("protocol_checker"), max_waits => 2**counter_bits_g);
+
     constant max_counter_c      : integer := 2**counter_bits_g;
 
     signal clk_s                : std_logic := '0';
     signal rst_s                : std_logic := '1';
+    signal rstn_s               : std_logic := '0';
     signal counter_cnt          : unsigned(counter_bits_g-1 downto 0) := (others => '0');
     signal tvalid_s             : std_logic := '0';
     signal tready_s             : std_logic := '0';
@@ -43,6 +51,7 @@ begin
     begin
         if clk_s'event and clk_s = '1' then
             rst_s <= '0';
+            rstn_s <= '1';
         end if;
     end process;
 
@@ -122,6 +131,23 @@ begin
     end process;
 
     -----------------------------------------------------------------
+    -- AXIS Protocol Checker 
+    -----------------------------------------------------------------
+    axis_checker_u: entity vunit_lib.axi_stream_protocol_checker
+        generic map(
+            protocol_checker        => protocol_checker
+        )
+        port map(
+            aclk                    => clk_s,
+            areset_n                => rstn_s,
+            --
+            tvalid                  => tvalid_s,
+            tready                  => tready_s,
+            tlast                   => tlast_s,
+            tdata                   => tdata_s
+        );
+
+    -----------------------------------------------------------------
     -- Vunit Process 
     -----------------------------------------------------------------
     main_u: process
@@ -130,7 +156,7 @@ begin
         while test_suite loop
             if run("axi_stream_count_gen_test") then
                 wait until tlast_s = '1';
-                wait for 1 us;
+                wait until clk_s'event and clk_s = '1';
             end if;
         end loop;
         test_runner_cleanup(runner);
