@@ -10,7 +10,8 @@ use IEEE.numeric_std.all;
 ---------------------------------------------------------------------
 entity axi_stream_count_gen is
     generic(
-        counter_bits_g      : integer := 1
+        counter_bits_g      : integer := 1;
+        infinity_loop_g     : boolean := true
     );
     port(
         clk_i               : in  std_logic;
@@ -65,9 +66,28 @@ begin
     end process;
 
     -----------------------------------------------------------------
+    -- Tvalid Gen 
+    -----------------------------------------------------------------
+    tvalid_infinity_gen: if infinity_loop_g = true generate
+        m_axis_tvalid_o <= '1';
+    end generate;
+
+    tvalid_gen: if infinity_loop_g = false generate
+        tvalid_p: process(clk_i)
+        begin
+            if clk_i'event and clk_i = '1' then
+                if rst_i = '1' then
+                    m_axis_tvalid_o <= '1';
+                elsif m_axis_tready_i = '1' and tlast_s = '1' then
+                    m_axis_tvalid_o <= '0';
+                end if;
+            end if;
+        end process;
+    end generate;
+
+    -----------------------------------------------------------------
     -- AXIS connection 
     -----------------------------------------------------------------
-    m_axis_tvalid_o <= '1';
     m_axis_tlast_o  <= tlast_s;
     m_axis_tdata_o  <= std_logic_vector(count_gen);
 

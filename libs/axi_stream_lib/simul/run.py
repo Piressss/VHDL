@@ -8,6 +8,10 @@ vu = VUnit.from_argv()
 # Add Verification Components
 vu.add_verification_components()
 
+# Creater base lib
+lib = vu.add_library("base_lib")
+lib.add_source_files("../../base_lib/*.vhd")
+
 # Create library 'lib'
 lib = vu.add_library("axis_lib")
 
