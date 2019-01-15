@@ -21,7 +21,7 @@ entity axi_stream_register is
         s_axis_tready_o     : out std_logic;
         s_axis_tlast_i      : in  std_logic;
         s_axis_tdata_i      : in  std_logic_vector(tdata_size_g-1 downto 0);
-        s_axis_tuser_i      : in  std_logic_vector(tuser_size_g-1 downto 0);
+        s_axis_tuser_i      : in  std_logic_vector(tuser_size_g-1 downto 0) := (others => '0');
         --
         m_axis_tvalid_o     : out std_logic;
         m_axis_tready_i     : in  std_logic;
@@ -56,7 +56,9 @@ begin
                 tvalid_s <= s_axis_tvalid_i;
                 tlast_s  <= s_axis_tlast_i;
                 tdata_s  <= s_axis_tdata_i;
-                tuser_s  <= s_axis_tuser_i;
+                if tuser_size_g /= 0 then
+                    tuser_s  <= s_axis_tuser_i;
+                end if;
             end if;
         end if;
     end process;

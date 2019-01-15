@@ -12,6 +12,10 @@ vu.add_verification_components()
 lib = vu.add_library("base_lib")
 lib.add_source_files("../../base_lib/*.vhd")
 
+# Creater base lib
+lib = vu.add_library("mem_lib")
+lib.add_source_files("../../mem_lib/*.vhd")
+
 # Create library 'lib'
 lib = vu.add_library("axis_lib")
 
