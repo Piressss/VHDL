@@ -7,6 +7,7 @@
 library ieee;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
+use IEEE.math_real.all;
 ---------------------------------------------------------------------
 package base_lib_pkg is
 
@@ -44,5 +45,5 @@ package body base_lib_pkg is
                 end if;
             return tmp;
     end vec_fit;
-
+    
 end base_lib_pkg;

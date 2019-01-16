@@ -25,7 +25,28 @@ lib.add_source_files("../*.vhd")
 # Add all TBs
 lib = vu.add_library("axis_lib_tb")
 lib.add_source_files("*.vhd")
-lib.set_generic("counter_bits_g", 15)
+
+counter_test = lib.entity("axi_stream_count_gen_tb") 
+counter_test.set_generic("counter_bits_g", 15)
+
+fifo_test = lib.entity("axis_fifo_tb")
+for test in fifo_test.get_tests():
+    if test.name == "axis_fifo_test0":
+        test.set_generic("addr_width_g", 12)
+        test.set_generic("data_width_g", 14)
+        test.set_generic("user_width_g", 2)
+        test.set_generic("fifo_register_g", "true")
+    elif test.name == "axis_fifo_test1":
+        test.set_generic("addr_width_g", 11)
+        test.set_generic("data_width_g", 13)
+        test.set_generic("user_width_g", 0)
+        test.set_generic("fifo_register_g", "true")
+    elif test.name == "axis_fifo_test2":
+        test.set_generic("addr_width_g", 11)
+        test.set_generic("data_width_g", 13)
+        test.set_generic("user_width_g", 3)
+        test.set_generic("fifo_register_g", "false")
+
 
 # Run vunit function
 vu.main()

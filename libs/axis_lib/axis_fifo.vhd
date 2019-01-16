@@ -54,6 +54,7 @@ architecture rtl of axis_fifo is
     signal wr_opr_s         : std_logic := '0';
     signal rd_opr_s         : std_logic := '0';
     signal rd_en            : std_logic := '0';
+    signal rd_en_async_s    : std_logic := '0';
     signal addr_wr_s        : unsigned(addr_width_g-1 downto 0) := (others => '0');
     signal addr_rd_s        : unsigned(addr_width_g-1 downto 0) := (others => '0');
     signal data_wr_s        : std_logic_vector(data_ram_c-1 downto 0) := (others => '0');
@@ -104,7 +105,7 @@ begin
             data_wr_i               => data_wr_s,
             addr_wr_i               => std_logic_vector(addr_wr_s),
             --
-            re_i                    => rd_en,
+            re_i                    => rd_opr_s,
             addr_rd_i               => std_logic_vector(addr_rd_s),
             data_valid_o            => tvalid_s(1),
             data_rd_o               => data_rd_s
@@ -153,7 +154,7 @@ begin
     -- Contador de Ocupacao 
     -----------------------------------------------------------------
     wr_opr_s <= tvalid_s(0) and tready_s(0);
-    rd_opr_s <= tvalid_s(1) and tready_s(1);
+    rd_opr_s <= rd_en and rd_en_async_s;
 
     storage_cnt_p: process(clk_i)
     begin
@@ -181,6 +182,8 @@ begin
             end if;
         end if;
     end process;
+
+    rd_en_async_s <= '0' when tvalid_s(1) = '1' and tready_s(1) = '0' else '1'; 
     
     -----------------------------------------------------------------
     -- Controle de Leitura 
@@ -192,8 +195,8 @@ begin
                 rd_en <= '0';
             elsif storage_cnt > 1 then
                 rd_en <= '1';
-            elsif storage_cnt = 1 and rd_en = '1' then
-                rd_en <= '0';
+            elsif storage_cnt = 1 and rd_en = '0' then
+                rd_en <= '1';
             else
                 rd_en <= '0';
             end if;
