@@ -62,8 +62,6 @@ architecture rtl of axis_fifo is
     signal data_rd_s        : std_logic_vector(data_ram_c-1 downto 0) := (others => '0');
     signal buffer_en        : std_logic := '0';
     signal buffer_cnt       : unsigned(1 downto 0) := (others => '0');
-    signal buffer_0_s       : std_logic_vector(data_ram_c-1 downto 0) := (others => '0');
-    signal buffer_1_s       : std_logic_vector(data_ram_c-1 downto 0) := (others => '0');
     signal data_valid_s     : std_logic := '0';
     signal buffer_wr_s      : unsigned(1 downto 0) := (others => '0');
     signal buffer_rd_s      : unsigned(1 downto 0) := (others => '0');
