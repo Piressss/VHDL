@@ -50,6 +50,7 @@ architecture tb of axis_fifo_tb is
     signal tuser_s              : tuser_t(1 downto 0) := (others => (others => '0'));
     signal tvalid_lock_cnt      : unsigned(vec_fit(addr_width_g) downto 0) := (others => '0');
     signal tready_lock_cnt      : unsigned(vec_fit(addr_width_g) downto 0) := (others => '0');
+    signal tready_fix_s         : std_logic := '0';
 
 begin
     
@@ -178,7 +179,11 @@ begin
             if clk_s'event and clk_s = '1' then
                 uniform(seed1, seed2, rand);    -- generate random number
                 result := std_logic_vector(to_unsigned(integer(rand*range_of_rand),10));
-                tready_s(1) <= result(0);
+                if tready_fix_s = '0' then
+                    tready_s(1) <= result(0);
+                else
+                    tready_s(1) <= '1';
+                end if;
             end if;
         end process;
 
@@ -212,6 +217,10 @@ begin
         test_runner_setup(runner, runner_cfg);
         while test_suite loop
             if run("axis_fifo_test0") or run("axis_fifo_test1") or run("axis_fifo_test2") then
+                wait until tlast_s(1) = '1';
+                wait until clk_s'event and clk_s = '1';
+            elsif run("axis_fifo_test3") then
+                tready_fix_s <= '1'; 
                 wait until tlast_s(1) = '1';
                 wait until clk_s'event and clk_s = '1';
             end if;

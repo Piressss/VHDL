@@ -46,6 +46,11 @@ for test in fifo_test.get_tests():
         test.set_generic("data_width_g", 13)
         test.set_generic("user_width_g", 3)
         test.set_generic("fifo_register_g", "false")
+    elif test.name == "axis_fifo_test3":
+        test.set_generic("addr_width_g", 11)
+        test.set_generic("data_width_g", 12)
+        test.set_generic("user_width_g", 4)
+        test.set_generic("fifo_register_g", "true")
 
 
 # Run vunit function
