@@ -121,16 +121,8 @@ begin
     no_user_gen: if user_width_g = 0 generate
         data_wr_s <= tlast_s(0) & tdata_s(0);
 
-        --tlast_s(1) <= data_rd_s(data_rd_s'high) when buffer_en = '0' else
-        --              buffer_0_s(buffer_0_s'high) when buffer_rd_s = '0' else
-        --              buffer_1_s(buffer_1_s'high) when buffer_rd_s = '1' else
-        --              '0';
         tlast_s(1) <= buffer_s(to_integer(buffer_rd_s))(data_ram_c-1);
 
-        --tdata_s(1) <= data_rd_s(data_ram_c-2 downto 0) when buffer_en = '0' else
-        --              buffer_0_s(data_ram_c-2 downto 0) when buffer_rd_s = '0' else
-        --              buffer_1_s(data_ram_c-2 downto 0) when buffer_rd_s = '1' else
-        --              (others => '0');
         tdata_s(1) <= buffer_s(to_integer(buffer_rd_s))(data_ram_c-2 downto 0);
 
     end generate;
@@ -138,22 +130,10 @@ begin
     user_gen: if user_width_g > 0 generate
         data_wr_s <= tlast_s(0) & tuser_s(0) & tdata_s(0);
 
-        --tlast_s(1) <= data_rd_s(data_rd_s'high) when buffer_en = '0' else
-        --              buffer_0_s(buffer_0_s'high) when buffer_rd_s = '0' else
-        --              buffer_1_s(buffer_1_s'high) when buffer_rd_s = '1' else
-        --              '0';
         tlast_s(1) <= buffer_s(to_integer(buffer_rd_s))(data_ram_c-1);
 
-        --tuser_s(1) <= data_rd_s(data_ram_c-2 downto data_width_g) when buffer_en = '0' else
-        --              buffer_0_s(data_ram_c-2 downto data_width_g) when buffer_rd_s = '0' else
-        --              buffer_1_s(data_ram_c-2 downto data_width_g) when buffer_rd_s = '1' else
-        --              (others => '0');
         tuser_s(1) <= buffer_s(to_integer(buffer_rd_s))(data_ram_c-2 downto data_width_g);
 
-        --tdata_s(1) <= data_rd_s(data_ram_c-2-user_width_g downto 0) when buffer_en = '0' else
-        --              buffer_0_s(data_ram_c-2-user_width_g downto 0) when buffer_rd_s = '0' else
-        --              buffer_1_s(data_ram_c-2-user_width_g downto 0) when buffer_rd_s = '1' else
-        --              (others => '0');
         tdata_s(1) <= buffer_s(to_integer(buffer_rd_s))(data_ram_c-2-user_width_g downto 0);
     end generate;
     -----------------------------------------------------------------
@@ -217,7 +197,6 @@ begin
     rd_en_async_s <= '0' when tvalid_s(1) = '1' and tready_s(1) = '0' else 
                      '0' when m_axis_tvalid_o = '1' and m_axis_tready_i = '0' else
                      '0' when buffer_cnt = 3 else
-                     --'0' when data_valid_s = '1' and buffer_en = '1' else
                      '1';
     
     -----------------------------------------------------------------
@@ -246,10 +225,6 @@ begin
         if clk_i'event and clk_i = '1' then
             if rst_i = '1' then
                 buffer_en <= '0';
-            --elsif data_valid_s = '1' and tready_s(1) = '0' then
-            --    buffer_en <= '1';
-            --elsif data_valid_s = '0' and buffer_en = '1' and tready_s(1) = '1' and buffer_cnt = 1 then
-            --    buffer_en <= '0';
             elsif data_valid_s = '1' then
                 buffer_en <= '1';
             elsif buffer_en = '1' and tready_s(1) = '1' then
@@ -265,10 +240,6 @@ begin
         if clk_i'event and clk_i = '1' then
             if rst_i = '1' then
                 buffer_cnt <= (others => '0');
-            --elsif data_valid_s = '1' and tready_s(1) = '0' then
-            --    buffer_cnt <= buffer_cnt + 1;
-            --elsif data_valid_s = '0' and tready_s(1) = '1' and buffer_en = '1' then
-            --    buffer_cnt <= buffer_cnt - 1;
             elsif data_valid_s = '1' then
                 if buffer_en = '1' and tready_s(1) = '0' then
                     buffer_cnt <= buffer_cnt + 1;
@@ -304,24 +275,12 @@ begin
     buffer_p: process(clk_i)
     begin
         if clk_i'event and clk_i = '1' then
-            --if data_valid_s = '1' and (tready_s(1) = '0' or buffer_en = '1') then
-            --    if buffer_cnt = 0 or buffer_cnt = 2 then
-            --        buffer_0_s <= data_rd_s;
-            --    elsif buffer_cnt = 1 then
-            --        if buffer_rd_s = '0' then
-            --            buffer_1_s <= data_rd_s;
-            --        else
-            --            buffer_0_s <= data_rd_s;
-            --        end if;
-            --    end if;
-            --end if;
             if data_valid_s = '1' then
                 buffer_s(to_integer(buffer_wr_s)) <= data_rd_s;
             end if;
         end if;
     end process;
 
-   -- tvalid_s(1) <= data_valid_s or buffer_en;
     tvalid_s(1) <= buffer_en;
 
     -----------------------------------------------------------------
