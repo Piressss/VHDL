@@ -46,7 +46,7 @@ architecture rtl of axis_parallel_adder is
         return result_v;
     end function define_stages_f;
 
-    type tdata_stage_t is array (natural range<>) of unsigned(data_width_g-1 downto 0);
+    type tdata_stage_t is array (natural range<>) of unsigned(data_width_g downto 0);
 
     constant stage_c        : integer := define_stages_f(num_words_g);
 
@@ -61,6 +61,7 @@ architecture rtl of axis_parallel_adder is
     signal tdata_s4_s       : tdata_stage_t( 3 downto 0) := (others => (others => '0'));
     signal tdata_s5_s       : tdata_stage_t( 1 downto 0) := (others => (others => '0'));
     signal tdata_s6_s       : tdata_stage_t( 0 downto 0) := (others => (others => '0'));
+    signal overflow_o_s     : std_logic_vector(0 downto 0) := (others => '0'); 
 
 begin
 
@@ -90,7 +91,7 @@ begin
         );
         
     tdata_gen: for i in num_words_g-1 downto 0 generate
-        tdata_s0_s(i) <= unsigned(tdata_s((i+1)*data_width_g -1 downto (i*data_width_g)));
+        tdata_s0_s(i)(data_width_g-1 downto 0) <= unsigned(tdata_s((i+1)*data_width_g -1 downto (i*data_width_g)));
     end generate;
     
     -----------------------------------------------------------------
@@ -278,7 +279,8 @@ begin
     -----------------------------------------------------------------
     output_register_u: entity axis_lib.axi_stream_register
         generic map(
-            tdata_size_g        => data_width_g
+            tdata_size_g        => data_width_g,
+            tuser_size_g        => 1
         )
         port map(
             clk_i               => clk_i,
@@ -287,12 +289,16 @@ begin
             s_axis_tvalid_i     => tvalid_s(6), 
             s_axis_tready_o     => tready_s(6),
             s_axis_tlast_i      => tlast_s(6),
-            s_axis_tdata_i      => std_logic_vector(tdata_s6_s(0)),
+            s_axis_tdata_i      => std_logic_vector(tdata_s6_s(0)(data_width_g-1 downto 0)),
+            s_axis_tuser_i      => std_logic_vector(tdata_s6_s(0)(data_width_g downto data_width_g)),
             --
             m_axis_tvalid_o     => m_axis_tvalid_o, 
             m_axis_tready_i     => m_axis_tready_i,
             m_axis_tlast_o      => m_axis_tlast_o,
-            m_axis_tdata_o      => m_axis_tdata_o
+            m_axis_tdata_o      => m_axis_tdata_o,
+            m_axis_tuser_o      => overflow_o_s
         );
+
+        overflow_o <= overflow_o_s(0);
         
 end rtl;
