@@ -33,7 +33,8 @@ adder_test = lib.entity("axis_parallel_adder_tb")
 for test in adder_test.get_tests():
     if test.name == "axis_add_test_0":
         test.set_generic("data_width_g" , 32)
-        test.set_generic("num_words_g"   , 6)
+        test.set_generic("num_words_g"  , 6)
+        test.set_generic("pckg_size_g"  , 4) 
 
 # Run vunit function
 vu.main()

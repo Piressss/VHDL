@@ -13,6 +13,12 @@ library base_lib;
 use base_lib.base_lib_pkg.all;
 --
 library axis_lib;
+--
+library vunit_lib;
+use vunit_lib.axi_stream_pkg.all;
+context vunit_lib.vunit_context;
+context vunit_lib.com_context;
+context vunit_lib.data_types_context;
 ---------------------------------------------------------------------
 entity axis_parallel_adder is
     generic(
@@ -108,6 +114,10 @@ begin
                     for i in 31 downto 0 loop
                         tdata_s1_s(i) <= tdata_s0_s(i*2) + tdata_s0_s((i*2)+1);
                     end loop;
+                elsif tvalid_s(1) = '1' and tready_s(1) = '0' then
+                    tvalid_s(1) <= '1';
+                    tlast_s(1)  <= tlast_s(1);
+                    tdata_s1_s  <= tdata_s1_s;
                 else
                     tvalid_s(1) <= '0';
                 end if;
@@ -138,6 +148,10 @@ begin
                     for i in 15 downto 0 loop
                         tdata_s2_s(i) <= tdata_s1_s(i*2) + tdata_s1_s((i*2)+1);
                     end loop;
+                elsif tvalid_s(2) = '1' and tready_s(2) = '0' then
+                    tvalid_s(2) <= '1';
+                    tlast_s(2)  <= tlast_s(2);
+                    tdata_s2_s  <= tdata_s2_s;
                 else
                     tvalid_s(2) <= '0';
                 end if;
@@ -168,6 +182,10 @@ begin
                     for i in 7 downto 0 loop
                         tdata_s3_s(i) <= tdata_s2_s(i*2) + tdata_s2_s((i*2)+1);
                     end loop;
+                elsif tvalid_s(3) = '1' and tready_s(3) = '0' then
+                    tvalid_s(3) <= '1';
+                    tlast_s(3)  <= tlast_s(3);
+                    tdata_s3_s  <= tdata_s3_s;
                 else
                     tvalid_s(3) <= '0';
                 end if;
@@ -194,10 +212,14 @@ begin
             if clk_i'event and clk_i = '1' then
                 if tvalid_s(3) = '1' and tready_s(3) = '1' then
                     tvalid_s(4) <= '1';
-                    tlast_s(4)  <= tlast_s(4);
+                    tlast_s(4)  <= tlast_s(3);
                     for i in 3 downto 0 loop
                         tdata_s4_s(i) <= tdata_s3_s(i*2) + tdata_s3_s((i*2)+1);
                     end loop;
+                elsif tvalid_s(4) = '1' and tready_s(4) = '0' then
+                    tvalid_s(4) <= '1';
+                    tlast_s(4)  <= tlast_s(4);
+                    tdata_s4_s  <= tdata_s4_s;
                 else
                     tvalid_s(4) <= '0';
                 end if;
@@ -224,10 +246,14 @@ begin
             if clk_i'event and clk_i = '1' then
                 if tvalid_s(4) = '1' and tready_s(4) = '1' then
                     tvalid_s(5) <= '1';
-                    tlast_s(5)  <= tlast_s(5);
+                    tlast_s(5)  <= tlast_s(4);
                     for i in 1 downto 0 loop
                         tdata_s5_s(i) <= tdata_s4_s(i*2) + tdata_s4_s((i*2)+1);
                     end loop;
+                elsif tvalid_s(5) = '1' and tready_s(5) = '0' then
+                    tvalid_s(5) <= '1';
+                    tlast_s(5)  <= tlast_s(5);
+                    tdata_s5_s  <= tdata_s5_s;
                 else
                     tvalid_s(5) <= '0';
                 end if;
@@ -254,10 +280,14 @@ begin
             if clk_i'event and clk_i = '1' then
                 if tvalid_s(5) = '1' and tready_s(5) = '1' then
                     tvalid_s(6) <= '1';
-                    tlast_s(6)  <= tlast_s(6);
+                    tlast_s(6)  <= tlast_s(5);
                     for i in 0 downto 0 loop
                         tdata_s6_s(i) <= tdata_s5_s(i*2) + tdata_s5_s((i*2)+1);
                     end loop;
+                elsif tvalid_s(6) = '1' and tready_s(6) = '0' then
+                    tvalid_s(6) <= '1';
+                    tlast_s(6)  <= tlast_s(6);
+                    tdata_s6_s  <= tdata_s6_s;
                 else
                     tvalid_s(6) <= '0';
                 end if;
