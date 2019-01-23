@@ -35,6 +35,14 @@ for test in adder_test.get_tests():
         test.set_generic("data_width_g" , 32)
         test.set_generic("num_words_g"  , 6)
         test.set_generic("pckg_size_g"  , 4) 
+    elif test.name == "axis_add_test_1":
+        test.set_generic("data_width_g" , 34)
+        test.set_generic("num_words_g"  , 17)
+        test.set_generic("pckg_size_g"  , 25) 
+    elif test.name == "axis_add_test_2":
+        test.set_generic("data_width_g" , 15)
+        test.set_generic("num_words_g"  , 44)
+        test.set_generic("pckg_size_g"  , 9) 
 
 # Run vunit function
 vu.main()

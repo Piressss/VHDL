@@ -258,7 +258,7 @@ begin
     begin
         test_runner_setup(runner, runner_cfg);
         while test_suite loop
-            if run("axis_add_test_0") then
+            if run("axis_add_test_0") or run("axis_add_test_1") or run("axis_add_test_2") then
                 wait until clk_s'event and clk_s = '1';
                 wait for 250 us;
                 wait until end_pckg_s = '1';
