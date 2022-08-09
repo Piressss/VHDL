@@ -23,7 +23,7 @@ package base_lib_pkg is
 
     -- Functions
     function vec_fit        (constant input : in integer) return integer;
-    function power_of2      (constant value : real) return boolean;
+    --function power_of2      (constant value : real) return boolean;
 
 end base_lib_pkg;
  
@@ -48,19 +48,19 @@ package body base_lib_pkg is
     end vec_fit;
                                 
     -- Check if a Value is power of 2
-    function power_of2 (constant value: real) return boolean is
-        variable result_real_v : real;
-        variable result_int_v  : integer;
-    begin
-         result_real_v := log(2, value);    -- Get the Log2 result
-         result_int_v := integer(result_real_v);    -- Get the integer part of the result
-         result_real_v := result_real_v - real(result_int_v);   -- Subtract the integer part from the Real Value
+--    function power_of2 (constant value: real) return boolean is
+--        variable result_real_v : real;
+--        variable result_int_v  : integer;
+--    begin
+--         result_real_v := log(2, value);    -- Get the Log2 result
+--         result_int_v := integer(result_real_v);    -- Get the integer part of the result
+--         result_real_v := result_real_v - real(result_int_v);   -- Subtract the integer part from the Real Value
          
-         if result_real_v = 0.0 then
-            return true;
-         else
-            return false;
-         end if;
-     end function;
+--         if result_real_v = 0.0 then
+--            return true;
+--         else
+--            return false;
+--         end if;
+--     end function;
     
 end base_lib_pkg;
